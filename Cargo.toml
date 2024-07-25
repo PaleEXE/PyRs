@@ -1,0 +1,12 @@
+[package]
+name = "plib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pyo3 = { version = "0.22.2", features = ["extension-module"] }
+rayon = "1.10.0"
+
+[lib]
+name = "plib"
+crate-type = ["cdylib"]
