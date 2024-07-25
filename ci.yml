@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC
+
 jobs:
   build-and-publish:
     runs-on: windows-latest
@@ -27,7 +31,10 @@ jobs:
     - name: Install maturin
       run: pip install maturin
 
-    - name: Build and publish
-      env:
-        PYPI_TOKEN: ${d1ee899c-c425-42e3-8342-239086f065a9}
-      run: maturin publish -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+    - name: Build the PyO3 library
+      run: maturin build
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@v1
+      with:
+        password: ${{ pypi-AgEIcHlwaS5vcmcCJGM1N2UzYTkwLWY1NmMtNDA5OC1iOGE4LTA1Mjg2NDQxODQwZAACKlszLCJhZjExN2JmNi0wYjQwLTRlNzItYmY4Zi0xYmIyYTA2YjIxNGYiXQAABiAGNKwwybiAbCpA3qu1WnWbQOB6NYcAUMD0nrhhhPPcFA }}
