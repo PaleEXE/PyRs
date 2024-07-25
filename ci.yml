@@ -1,15 +1,11 @@
-name: PyRs CI Workflow
+name: Publish PyRs to PyPI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: windows-latest
 
     steps:
@@ -28,14 +24,10 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Install maturin (for building PyO3 projects)
+    - name: Install maturin
       run: pip install maturin
 
-    - name: Install Rust dependencies
-      run: cargo fetch
-
-    - name: Build the PyO3 library
-      run: maturin develop
-
-    - name: Run tests
-      run: cargo test
+    - name: Build and publish
+      env:
+        PYPI_TOKEN: ${d1ee899c-c425-42e3-8342-239086f065a9}
+      run: maturin publish -u __token__ -p ${{ secrets.PYPI_TOKEN }}
