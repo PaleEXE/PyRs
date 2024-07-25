@@ -1,0 +1,41 @@
+name: PyRs CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Install maturin (for building PyO3 projects)
+      run: pip install maturin
+
+    - name: Install Rust dependencies
+      run: cargo fetch
+
+    - name: Build the PyO3 library
+      run: maturin develop
+
+    - name: Run tests
+      run: cargo test
