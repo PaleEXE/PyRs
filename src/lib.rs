@@ -11,11 +11,6 @@ fn counter<'a>(inp: &'a str) -> HashMap<&'a str, usize>{
     rizz
 }
 #[pyfunction]
-fn show(txt: String){
-    println!("{txt}");
-    if txt == "Majd"{println!("Did you mean Moon?")}
-}
-#[pyfunction]
 fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize>{
     inp
         .split_ascii_whitespace()
@@ -37,6 +32,5 @@ fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize>{
 fn plib(m: &Bound<'_, PyModule>) -> PyResult<()>{
     m.add_function(wrap_pyfunction!(counter, m)?)?;
     m.add_function(wrap_pyfunction!(par_counter, m)?)?;
-    m.add_function(wrap_pyfunction!(show, m)?)?;
     Ok(())
 }
