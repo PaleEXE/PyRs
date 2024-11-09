@@ -15,11 +15,7 @@ fn counter<'a>(inp: &'a str) -> HashMap<&'a str, usize> {
 }
 
 #[pyfunction]
-<<<<<<< HEAD
-fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize>{
-=======
 fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize> {
->>>>>>> 0656289 (s)
     inp
         .split_ascii_whitespace()
         .collect::<Vec<_>>()
@@ -95,9 +91,6 @@ fn thread_counter(text: String) -> PyResult<Py<PyAny>> {
 fn plib(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(counter, m)?)?;
     m.add_function(wrap_pyfunction!(par_counter, m)?)?;
-<<<<<<< HEAD
-=======
     m.add_function(wrap_pyfunction!(thread_counter, m)?)?;
->>>>>>> 0656289 (s)
     Ok(())
 }
