@@ -32,10 +32,10 @@ fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize> {
         })
 }
 
-fn words_counter(text: &str) -> HashMap<&str, usize> {
+fn words_counter(text: String) -> HashMap<String, usize> {
     let mut word_counts = HashMap::new();
     for word in text.split_whitespace() {
-        *word_counts.entry(word).or_insert(0) += 1;
+        *word_counts.entry(word.to_owned()).or_insert(0) += 1;
     }
     word_counts
 }
@@ -51,18 +51,23 @@ fn thread_counter(text: String) -> PyResult<Py<PyAny>> {
 
     for i in 0..num_threads {
         let start = i * chunk_size;
-        let end = if i == num_threads - 1 {
+        let mut end = if i == num_threads - 1 {
             text_len
         } else {
             (i + 1) * chunk_size
         };
 
-        let end = text[start..end].rfind(|c: char| c.is_whitespace()).map_or(end, |pos| start + pos);
-        let chunk = &text[start..end];
+        // Prevent cutting a word in half
+        if let Some(pos) = text[start..end].rfind(|c: char| c.is_whitespace()) {
+            end = start + pos;
+        }
+
+        // Clone the chunk to give each thread ownership
+        let chunk = text[start..end].to_string(); // <-- Fixed here
         let word_count = Arc::clone(&word_count);
 
         let handle = thread::spawn(move || {
-            let counts = words_counter(&chunk);
+            let counts = words_counter(chunk);
             let mut word_count = word_count.lock().unwrap();
             for (word, count) in counts {
                 *word_count.entry(word).or_insert(0) += count;
@@ -86,6 +91,7 @@ fn thread_counter(text: String) -> PyResult<Py<PyAny>> {
         Ok(py_dict.into())
     })
 }
+
 
 #[pymodule]
 fn plib(_py: Python, m: &PyModule) -> PyResult<()> {
