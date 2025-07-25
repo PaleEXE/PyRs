@@ -39,6 +39,7 @@ for i in range(1, 31):
     list_collection.append(pref1(collections.Counter, text))
 
 # Prepare benchmark data
+colors = ["blue", "orange", "green", "red"]
 langs = ["Python Collections", "Rust Single-threaded", "Rust Rayon", "Rust Threads"]
 d = dict(zip(langs, [list_collection, list_rust, list_par, list_threads]))
 df = pd.DataFrame(d)
@@ -51,11 +52,37 @@ fig, axs = plt.subplots(1, 2, figsize=(16, 6), gridspec_kw={"width_ratios": [3, 
 
 # --- Left: Line Plot for Performance ---
 axs[0].plot(
-    x, list_collection, label="Python Collections.Counter", linestyle="--", marker="o"
+    x,
+    list_collection,
+    label="Python Collections.Counter",
+    color=colors[0],
+    linestyle="--",
+    marker="o",
 )
-axs[0].plot(x, list_rust, label="Rust Single-threaded", linestyle="--", marker="o")
-axs[0].plot(x, list_par, label="Rust Rayon (Parallel)", linestyle="--", marker="o")
-axs[0].plot(x, list_threads, label="Rust Manual Threads", linestyle="--", marker="o")
+axs[0].plot(
+    x,
+    list_rust,
+    label="Rust Single-threaded",
+    color=colors[1],
+    linestyle="--",
+    marker="o",
+)
+axs[0].plot(
+    x,
+    list_par,
+    label="Rust Rayon (Parallel)",
+    color=colors[2],
+    linestyle="--",
+    marker="o",
+)
+axs[0].plot(
+    x,
+    list_threads,
+    label="Rust Manual Threads",
+    color=colors[3],
+    linestyle="--",
+    marker="o",
+)
 
 axs[0].set_title("Performance Over Increasing Input Size")
 axs[0].set_xlabel("Input Size (Thousands of Characters)")
@@ -67,9 +94,7 @@ axs[0].grid(True)
 means = df.mean()
 stds = df.std()
 
-axs[1].barh(
-    langs, means, xerr=stds, color=["gray", "orange", "green", "blue"], alpha=0.7
-)
+axs[1].barh(langs, means, xerr=stds, color=colors, alpha=0.7)
 axs[1].set_title("Mean Execution Time ± Std")
 axs[1].set_xlabel("Time (seconds)")
 axs[1].invert_yaxis()  # To match legend order

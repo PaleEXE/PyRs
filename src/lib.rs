@@ -16,17 +16,15 @@ fn counter<'a>(inp: &'a str) -> HashMap<&'a str, usize> {
 
 #[pyfunction]
 fn par_counter<'a>(inp: &'a str) -> HashMap<&'a str, usize> {
-    inp
-        .split_ascii_whitespace()
-        .collect::<Vec<_>>()
-        .par_iter()
-        .fold(HashMap::new, |mut acc, &item| {
-            *acc.entry(item).or_insert(0) += 1;
+        inp
+        .par_split_whitespace()
+        .fold(HashMap::new, |mut acc, word| {
+            *acc.entry(word).or_insert(0) += 1;
             acc
         })
-        .reduce(HashMap::new, |mut acc, item| {
-            for (key, value) in item {
-                *acc.entry(key).or_insert(0) += value;
+        .reduce(HashMap::new, |mut acc, map| {
+            for (k, v) in map {
+                *acc.entry(k).or_insert(0) += v;
             }
             acc
         })
